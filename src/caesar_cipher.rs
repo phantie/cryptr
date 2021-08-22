@@ -3,10 +3,8 @@ use std::collections::HashMap;
 use crate::Cipher;
 
 fn get_transition_map(shift: usize) -> HashMap<char, char> {
-    let letters: Vec<char> = crate::utils::string::ENG_ALPHA
-        .to_lowercase()
-        .chars()
-        .collect();
+    let letters: Vec<char> = ('a'..='z').collect();
+
     let shift = shift % letters.len();
     letters
         .iter()
@@ -31,7 +29,6 @@ pub fn apply(value: &str, mode: Cipher, shift: usize) -> Option<String> {
         None
     }
 }
-
 
 #[cfg(test)]
 mod tests {

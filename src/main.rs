@@ -11,6 +11,4 @@ pub enum Cipher {
     E,
     D,
 }
-fn main() {
-
-}
+fn main() {}

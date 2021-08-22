@@ -1,15 +1,11 @@
-use std::collections::HashMap;
 use crate::Cipher;
-
+use std::collections::HashMap;
 
 pub fn apply(value: &str, mode: Cipher, key: &str) -> Option<String> {
     if crate::utils::string::is_alphabetic_lowercase(value)
         & crate::utils::string::is_alphabetic_lowercase(key)
     {
-        let letters: Vec<char> = crate::utils::string::ENG_ALPHA
-            .to_lowercase()
-            .chars()
-            .collect();
+        let letters: Vec<char> = ('a'..='z').collect();
 
         let letter_to_idx = letters
             .iter()
@@ -44,7 +40,6 @@ pub fn apply(value: &str, mode: Cipher, key: &str) -> Option<String> {
     }
 }
 
-
 #[cfg(test)]
 mod tests {
     use crate::Cipher;
@@ -52,8 +47,10 @@ mod tests {
     #[test]
     fn basic_test() {
         let plain = "theydrinkthetea";
-        let e = super::apply(plain, Cipher::E, "duh");
-        assert_eq!(e, Some("wblbxylhrwblwyh".to_owned()));
-        // println!("{:?}", e);
+        let encrypted = super::apply(plain, Cipher::E, "duh").unwrap();
+        assert_eq!(encrypted, "wblbxylhrwblwyh".to_owned());
+        // let decrypted = super::apply(&encrypted, Cipher::D, "duh").unwrap();
+        // // println!("{:?}", e);
+        // assert_eq!(plain, decrypted);
     }
 }
