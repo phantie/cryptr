@@ -4,6 +4,7 @@
 #![allow(unused_imports)]
 
 mod caesar_cipher;
+mod utils;
 mod vigenere_cipher;
 
 fn main() {

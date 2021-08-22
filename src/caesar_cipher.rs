@@ -1,19 +1,7 @@
-use std::{collections::HashMap, hash::Hash};
-
-fn is_cipherable(value: &str) -> bool {
-    fn is_string_alphabetic(value: &str) -> bool {
-        value.chars().all(|c| c.is_alphabetic())
-    }
-
-    fn is_string_lowercase(value: &str) -> bool {
-        value.to_lowercase() == value
-    }
-
-    is_string_alphabetic(value) & is_string_lowercase(value)
-}
+use std::collections::HashMap;
 
 fn get_transition_map(shift: usize, invert: bool) -> HashMap<char, char> {
-    let letters: Vec<char> = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    let letters: Vec<char> = crate::utils::string::ENG_ALPHA
         .to_lowercase()
         .chars()
         .collect();
@@ -38,18 +26,8 @@ fn get_transition_map(shift: usize, invert: bool) -> HashMap<char, char> {
         .collect::<HashMap<_, _>>()
 }
 
-// fn invert_hashmap<K, V>(map: &HashMap<K, V>) -> HashMap<V, K>
-// where
-//     V: Eq + Hash + Clone,
-//     K: Clone,
-// {
-//     map.iter()
-//         .map(|(k, v)| ((*v).clone(), (*k).clone()))
-//         .collect::<HashMap<_, _>>()
-// }
-
 pub fn encrypt(value: &str, shift: usize) -> Option<String> {
-    if is_cipherable(value) {
+    if crate::utils::string::is_alphabetic_lowercase(value) {
         let transition_map = &get_transition_map(shift, false);
         Some(
             value
@@ -63,7 +41,7 @@ pub fn encrypt(value: &str, shift: usize) -> Option<String> {
 }
 
 pub fn decrypt(value: &str, shift: usize) -> Option<String> {
-    if is_cipherable(value) {
+    if crate::utils::string::is_alphabetic_lowercase(value) {
         let transition_map = &get_transition_map(shift, true);
         Some(
             value
