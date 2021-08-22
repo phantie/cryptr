@@ -10,13 +10,7 @@ fn get_transition_map(shift: usize, invert: bool) -> HashMap<char, char> {
         .iter()
         .enumerate()
         .map(|(idx, c)| {
-            let pair = (*c, {
-                if idx + shift >= letters.len() {
-                    letters[idx + shift - letters.len()]
-                } else {
-                    letters[idx + shift]
-                }
-            });
+            let pair = (*c, letters[(idx + shift) % letters.len()]);
             if invert {
                 (pair.1, pair.0)
             } else {

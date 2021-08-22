@@ -8,5 +8,7 @@ mod utils;
 mod vigenere_cipher;
 
 fn main() {
-    let plain = "wooshhh";
+    let plain = "theydrinkthetea";
+    let e = vigenere_cipher::encrypt(plain, "duh");
+    println!("{:?}", e);
 }
