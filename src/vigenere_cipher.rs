@@ -1,6 +1,8 @@
 use std::collections::HashMap;
+use crate::Cipher;
 
-pub fn encrypt(value: &str, key: &str) -> Option<String> {
+
+pub fn apply(value: &str, mode: Cipher, key: &str) -> Option<String> {
     if crate::utils::string::is_alphabetic_lowercase(value)
         & crate::utils::string::is_alphabetic_lowercase(key)
     {
@@ -42,16 +44,15 @@ pub fn encrypt(value: &str, key: &str) -> Option<String> {
     }
 }
 
-pub fn decrypt(value: &str, key: &str) -> Option<String> {
-    unimplemented!()
-}
 
 #[cfg(test)]
 mod tests {
+    use crate::Cipher;
+
     #[test]
     fn basic_test() {
         let plain = "theydrinkthetea";
-        let e = super::encrypt(plain, "duh");
+        let e = super::apply(plain, Cipher::E, "duh");
         assert_eq!(e, Some("wblbxylhrwblwyh".to_owned()));
         // println!("{:?}", e);
     }

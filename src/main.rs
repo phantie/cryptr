@@ -7,8 +7,10 @@ mod caesar_cipher;
 mod utils;
 mod vigenere_cipher;
 
+pub enum Cipher {
+    E,
+    D,
+}
 fn main() {
-    let plain = "theydrinkthetea";
-    let e = vigenere_cipher::encrypt(plain, "duh");
-    println!("{:?}", e);
+
 }

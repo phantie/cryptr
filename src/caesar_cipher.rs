@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 
-fn get_transition_map(shift: usize, invert: bool) -> HashMap<char, char> {
+use crate::Cipher;
+
+fn get_transition_map(shift: usize) -> HashMap<char, char> {
     let letters: Vec<char> = crate::utils::string::ENG_ALPHA
         .to_lowercase()
         .chars()
@@ -9,20 +11,16 @@ fn get_transition_map(shift: usize, invert: bool) -> HashMap<char, char> {
     letters
         .iter()
         .enumerate()
-        .map(|(idx, c)| {
-            let pair = (*c, letters[(idx + shift) % letters.len()]);
-            if invert {
-                (pair.1, pair.0)
-            } else {
-                pair
-            }
-        })
+        .map(|(idx, c)| (*c, letters[(idx + shift) % letters.len()]))
         .collect::<HashMap<_, _>>()
 }
 
-pub fn encrypt(value: &str, shift: usize) -> Option<String> {
+pub fn apply(value: &str, mode: Cipher, shift: usize) -> Option<String> {
     if crate::utils::string::is_alphabetic_lowercase(value) {
-        let transition_map = &get_transition_map(shift, false);
+        let mut transition_map = get_transition_map(shift);
+        if let Cipher::D = mode {
+            transition_map = crate::utils::hash_map::invert(&transition_map);
+        }
         Some(
             value
                 .chars()
@@ -34,28 +32,17 @@ pub fn encrypt(value: &str, shift: usize) -> Option<String> {
     }
 }
 
-pub fn decrypt(value: &str, shift: usize) -> Option<String> {
-    if crate::utils::string::is_alphabetic_lowercase(value) {
-        let transition_map = &get_transition_map(shift, true);
-        Some(
-            value
-                .chars()
-                .map(|c| transition_map.get(&c).unwrap())
-                .collect::<String>(),
-        )
-    } else {
-        None
-    }
-}
 
 #[cfg(test)]
 mod tests {
+    use crate::Cipher;
+
     #[test]
     fn basic_test() {
         let plain = "wooshhh";
-        let encrypted = super::encrypt(plain, 3).unwrap();
+        let encrypted = super::apply(plain, Cipher::E, 3).unwrap();
         assert_ne!(encrypted, plain);
-        let decrypted = super::decrypt(&encrypted, 3).unwrap();
+        let decrypted = super::apply(&encrypted, Cipher::D, 3).unwrap();
         assert_eq!(plain, decrypted);
     }
 }
