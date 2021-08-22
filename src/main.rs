@@ -8,5 +8,4 @@ mod vigenere_cipher;
 
 fn main() {
     let plain = "wooshhh";
-    
 }

@@ -12,7 +12,7 @@ fn is_cipherable(value: &str) -> bool {
     is_string_alphabetic(value) & is_string_lowercase(value)
 }
 
-fn get_transition_map(shift: usize) -> HashMap<char, char> {
+fn get_transition_map(shift: usize, invert: bool) -> HashMap<char, char> {
     let letters: Vec<char> = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         .to_lowercase()
         .chars()
@@ -22,54 +22,57 @@ fn get_transition_map(shift: usize) -> HashMap<char, char> {
         .iter()
         .enumerate()
         .map(|(idx, c)| {
-            (*c, {
+            let pair = (*c, {
                 if idx + shift >= letters.len() {
                     letters[idx + shift - letters.len()]
                 } else {
                     letters[idx + shift]
                 }
-            })
+            });
+            if invert {
+                (pair.1, pair.0)
+            } else {
+                pair
+            }
         })
         .collect::<HashMap<_, _>>()
 }
 
-fn invert_hashmap<K, V>(map: &HashMap<K, V>) -> HashMap<V, K>
-where
-    V: Eq + Hash + Clone,
-    K: Clone,
-{
-    map.iter()
-        .map(|(k, v)| ((*v).clone(), (*k).clone()))
-        .collect::<HashMap<_, _>>()
-}
+// fn invert_hashmap<K, V>(map: &HashMap<K, V>) -> HashMap<V, K>
+// where
+//     V: Eq + Hash + Clone,
+//     K: Clone,
+// {
+//     map.iter()
+//         .map(|(k, v)| ((*v).clone(), (*k).clone()))
+//         .collect::<HashMap<_, _>>()
+// }
 
 pub fn encrypt(value: &str, shift: usize) -> Option<String> {
-    match is_cipherable(value) {
-        false => None,
-        true => {
-            let transition_map = get_transition_map(shift);
-            Some(
-                value
-                    .chars()
-                    .map(|c| transition_map.get(&c).unwrap())
-                    .collect::<String>(),
-            )
-        }
+    if is_cipherable(value) {
+        let transition_map = &get_transition_map(shift, false);
+        Some(
+            value
+                .chars()
+                .map(|c| transition_map.get(&c).unwrap())
+                .collect::<String>(),
+        )
+    } else {
+        None
     }
 }
 
 pub fn decrypt(value: &str, shift: usize) -> Option<String> {
-    match is_cipherable(value) {
-        false => None,
-        true => {
-            let transition_map = invert_hashmap(&get_transition_map(shift));
-            Some(
-                value
-                    .chars()
-                    .map(|c| transition_map.get(&c).unwrap())
-                    .collect::<String>(),
-            )
-        }
+    if is_cipherable(value) {
+        let transition_map = &get_transition_map(shift, true);
+        Some(
+            value
+                .chars()
+                .map(|c| transition_map.get(&c).unwrap())
+                .collect::<String>(),
+        )
+    } else {
+        None
     }
 }
 
