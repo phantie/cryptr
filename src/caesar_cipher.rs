@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-fn is_cypherable(value: &str) -> bool {
+fn is_cipherable(value: &str) -> bool {
     fn is_string_alphabetic(value: &str) -> bool {
         value.chars().all(|c| c.is_alphabetic())
     }
@@ -44,7 +44,7 @@ where
 }
 
 pub fn encrypt(value: &str, shift: usize) -> Option<String> {
-    match is_cypherable(value) {
+    match is_cipherable(value) {
         false => None,
         true => {
             let transition_map = get_transition_map(shift);
@@ -59,7 +59,7 @@ pub fn encrypt(value: &str, shift: usize) -> Option<String> {
 }
 
 pub fn decrypt(value: &str, shift: usize) -> Option<String> {
-    match is_cypherable(value) {
+    match is_cipherable(value) {
         false => None,
         true => {
             let transition_map = invert_hashmap(&get_transition_map(shift));
@@ -70,5 +70,17 @@ pub fn decrypt(value: &str, shift: usize) -> Option<String> {
                     .collect::<String>(),
             )
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn basic_test() {
+        let plain = "wooshhh";
+        let encrypted = super::encrypt(plain, 3).unwrap();
+        assert_ne!(encrypted, plain);
+        let decrypted = super::decrypt(&encrypted, 3).unwrap();
+        assert_eq!(plain, decrypted);
     }
 }
