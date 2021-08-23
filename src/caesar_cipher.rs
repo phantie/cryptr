@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, hash::Hash};
 
 use crate::Cipher;
 
@@ -34,12 +34,17 @@ pub fn apply(value: &str, mode: Cipher, shift: usize) -> Option<String> {
 mod tests {
     use crate::Cipher;
 
-    #[test]
-    fn basic_test() {
-        let plain = "wooshhh";
-        let encrypted = super::apply(plain, Cipher::E, 3).unwrap();
+    fn enc_dec_success(plain: &str, shift: usize) -> bool {
+        let encrypted = super::apply(plain, Cipher::E, shift).unwrap();
         assert_ne!(encrypted, plain);
-        let decrypted = super::apply(&encrypted, Cipher::D, 3).unwrap();
-        assert_eq!(plain, decrypted);
+        let decrypted = super::apply(&encrypted, Cipher::D, shift).unwrap();
+        plain == decrypted
+    }
+
+    #[test]
+    fn cases() {
+        assert!(enc_dec_success("wooshhh", 3));
+        assert!(enc_dec_success("woooshhhhh", 10));
+        assert!(enc_dec_success("woooooshhhhhhh", 30));
     }
 }

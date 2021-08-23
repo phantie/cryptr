@@ -29,7 +29,10 @@ pub fn apply(value: &str, mode: Cipher, key: &str) -> Option<String> {
                         .get(&{
                             let offset = offsets.next().unwrap();
                             let idx = *letter_to_idx.get(&c).unwrap();
-                            (idx + offset) % letters.len()
+                            match mode {
+                                Cipher::E => (idx + offset) % letters.len(),
+                                Cipher::D => (letters.len() + idx - offset) % letters.len(),
+                            }
                         })
                         .unwrap()
                 })
@@ -44,13 +47,17 @@ pub fn apply(value: &str, mode: Cipher, key: &str) -> Option<String> {
 mod tests {
     use crate::Cipher;
 
+    fn enc_dec_success(plain: &str, key: &str) -> bool {
+        let encrypted = super::apply(plain, Cipher::E, key).unwrap();
+        assert_ne!(encrypted, plain);
+        let decrypted = super::apply(&encrypted, Cipher::D, key).unwrap();
+        plain == decrypted
+    }
+
     #[test]
-    fn basic_test() {
-        let plain = "theydrinkthetea";
-        let encrypted = super::apply(plain, Cipher::E, "duh").unwrap();
-        assert_eq!(encrypted, "wblbxylhrwblwyh".to_owned());
-        // let decrypted = super::apply(&encrypted, Cipher::D, "duh").unwrap();
-        // // println!("{:?}", e);
-        // assert_eq!(plain, decrypted);
+    fn cases() {
+        assert!(enc_dec_success("theydrinkthetea", "duh"));
+        assert!(enc_dec_success("theydrinkthetea", "helloworld"));
+        assert!(enc_dec_success("plain", "secret"));
     }
 }
