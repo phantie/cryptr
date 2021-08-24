@@ -5,7 +5,6 @@ use crate::Cipher;
 fn get_transition_map(shift: usize) -> HashMap<char, char> {
     let letters: Vec<char> = ('a'..='z').collect();
 
-    let shift = shift % letters.len();
     letters
         .iter()
         .enumerate()

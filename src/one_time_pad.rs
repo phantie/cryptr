@@ -10,7 +10,7 @@ mod tests {
 
     fn enc_dec_success(plain: usize, key: usize) -> bool {
         let encrypted = super::apply(plain, Cipher::E, key).unwrap();
-        assert_ne!(encrypted, plain);
+        assert_ne!(encrypted, plain); // possible collision due to XOR, whatev
         let decrypted = super::apply(encrypted, Cipher::D, key).unwrap();
         plain == decrypted
     }
